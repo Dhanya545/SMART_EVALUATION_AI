@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Evaluator Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand text-success fw-bold" href="#">AI Answer Evaluator</a>
+    <div class="ms-auto">
+      <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary btn-sm me-2">Dashboard</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container my-5">
+  <!-- Upload Card -->
+  <div class="card shadow p-4 mb-4 rounded-4">
+    <h4 class="text-success mb-3">Upload & Evaluate Answer</h4>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Answer Image</label>
+        <input type="file" class="form-control" name="image" accept="image/*" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Model Answer File (.txt)</label>
+        <input type="file" class="form-control" name="model_file" accept=".txt" required>
+      </div>
+      <button type="submit" class="btn btn-success shadow-sm">Evaluate</button>
+    </form>
+  </div>
+
+  <!-- Result Card -->
+  <div id="result" class="card shadow p-4 rounded-4" style="display:none;">
+    <h5 class="text-success mb-3">Evaluation Result</h5>
+    <p><strong>Best Match:</strong> <span id="best_match"></span></p>
+    <p><strong>Similarity:</strong> <span id="similarity"></span></p>
+    <p><strong>Marks:</strong> <span id="marks"></span></p>
+    <h6>Extracted Text:</h6>
+    <pre id="text"></pre>
+  </div>
+</div>
+
+<!-- JS -->
+<script>
+document.getElementById("uploadForm").onsubmit = async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const response = await fetch("/evaluate", { method: "POST", body: formData });
+  const data = await response.json();
+  const resultDiv = document.getElementById("result");
+  resultDiv.style.display = "block";
+
+  if (data.error) {
+    resultDiv.innerHTML = "<div class='alert alert-danger'>" + data.error + "</div>";
+  } else {
+    document.getElementById("best_match").innerText = data.best_match;
+    document.getElementById("similarity").innerText = data.similarity;
+    document.getElementById("marks").innerText = data.marks;
+    document.getElementById("text").innerText = data.text;
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

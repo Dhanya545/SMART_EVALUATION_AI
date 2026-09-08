@@ -1,0 +1,23 @@
+body.bg-gradient {
+    background: linear-gradient(to right, #a8e063, #56ab2f);
+}
+
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+pre {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.btn-success {
+    font-weight: 600;
+}
